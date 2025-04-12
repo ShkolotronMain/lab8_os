@@ -1,15 +1,15 @@
-struct node
+typedef struct node
 {
     int page_num;
     struct node* next;
-};
+} node;
 
-struct stack
+typedef struct stack
 {
     struct node* head;
     int count;
     struct node* tail;
-};
+} stack;
 
 // Создаёт пустой стек
 struct stack* create_stack();
