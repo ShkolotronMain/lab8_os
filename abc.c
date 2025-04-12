@@ -43,7 +43,7 @@ void fifo(const int* req, const int cnt, const int size, int* rewrites)
             // Если места нет
             else
             {
-                printf("[%d] Из памяти удалена ячейка %d\n", i, pop_last(s));
+                printf("[%d] Из памяти удалена страница %d\n", i, pop_last(s));
                 add_node(s, req[i]);
                 printf("[%d] В пустую ячейку памяти добавлена страница %d\n", i, req[i]);
                 *rewrites += 1;
@@ -89,12 +89,12 @@ void opt(const int* req, const int cnt, const int size, int* rewrites)
                 node* _node_ = s->head;
 
                 // Заносим искомые номера в массив номеров страниц
-                while(_node_->next)
+                do
                 {
                     pages[p] = _node_->page_num;
                     _node_ = _node_->next;
                     p++;
-                }
+                } while(_node_);
 
                 // Ищем самую "забытую"
                 for (int g=i+1; g<cnt; g++)
@@ -112,7 +112,8 @@ void opt(const int* req, const int cnt, const int size, int* rewrites)
                 p = max(indexes, size);
                 p = pages[p];
                 
-                printf("[%d] Из памяти удалена страница %d\n", i, del_node(s, p));
+                del_node(s, p);
+                printf("[%d] Из памяти удалена страница %d\n", i, p);
                 add_node(s, req[i]);
                 printf("[%d] В пустую ячейку памяти добавлена страница %d\n", i, req[i]);
 
@@ -150,6 +151,12 @@ int main()
 
     fifo(requests, count, buffer_size, &rewrites);
     printf("Алгоритм FIFO для %d блоков страниц даёт %d перезаписей\n", buffer_size, rewrites);
+    rewrites = 0;
+
+    putc('\n', stdout);
+
+    opt(requests, count, buffer_size, &rewrites);
+    printf("Алгоритм OPT для %d блоков страниц даёт %d перезаписей\n", buffer_size, rewrites);
     rewrites = 0;
 
     return 0;
